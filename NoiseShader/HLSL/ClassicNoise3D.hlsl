@@ -23,6 +23,9 @@
 // https://github.com/ashima/webgl-noise
 //
 
+#ifndef _INCLUDE_PERLIN_NOISE_3D_
+#define _INCLUDE_PERLIN_NOISE_3D_
+
 #include "NoiseUtils.hlsl" 
 
 // Classic Perlin noise
@@ -180,4 +183,67 @@ void PerlinNoise3DPeriodic_float(float3 input, float3 period, out float Out)
     Out = pnoise(input, period);
 }
 
+void FractalPerlinNoise3D_float(float3 input, int octaves, float lacunarity, float gain, out float output)
+{
+    // Initial values
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    // Loop of octaves
+    output = 0;
+    float total_amplitude = 0;
+    for (int i = 0; i < octaves; i++) {
+        output += amplitude * cnoise(frequency * input);
+        total_amplitude += amplitude;
+        frequency *= lacunarity;
+        amplitude *= gain;
+    }
+    output /= total_amplitude;
+}
+
+float PingPong(float t)
+{
+    t -= (int)(t * 0.5f) * 2;
+    return t < 1 ? t : 2 - t;
+}
+
+void RidgedPerlinNoise3D_float(float3 input, int octaves, float lacunarity, float gain, out float output)
+{
+    // Initial values
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    float weight = 1;
+    // Loop of octaves
+    output = 0;
+    for (int i = 0; i < octaves; i++)
+    {
+        // Ping Pong
+        // float noise = PingPong(cnoise(frequency * input) + 1);
+        // output += (noise - 0.5f) * 2 * amplitude;
+        // amplitude *= noise;
+        //
+        // frequency *= lacunarity;
+        // amplitude *= gain;
+    
+        // Rigded 1
+        // float noise = abs(cnoise(frequency * input));
+        // output += (noise * -2 + 1) * amplitude;
+        // amplitude *= 1 - noise;
+        //
+        // frequency *= lacunarity;
+        // amplitude *= gain;
+        
+        // Rigded 2
+        float v = 1 - abs(cnoise(frequency * input));
+        v *= v;
+        v *= weight;
+        weight = clamp(v, 0, 1);
+        
+        output += v * amplitude;
+        frequency *= lacunarity;
+        amplitude *= gain;
+    }
+}
+
 // END JIMMY'S MODIFICATIONS
+
+#endif

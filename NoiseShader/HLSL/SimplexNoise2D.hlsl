@@ -19,6 +19,9 @@
 //               https://github.com/ashima/webgl-noise
 //
 
+#ifndef _INCLUDE_SIMPLEX_NOISE_2D_
+#define _INCLUDE_SIMPLEX_NOISE_2D_
+
 #include "NoiseUtils.hlsl" 
 
 float snoise(float2 v)
@@ -137,3 +140,5 @@ void SimplexNoise2DGradient_float(float2 input, out float Out)
 }
 
 // END JIMMY'S MODIFICATIONS
+
+#endif

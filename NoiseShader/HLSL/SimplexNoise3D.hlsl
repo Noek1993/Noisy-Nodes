@@ -20,6 +20,9 @@
 //               https://github.com/ashima/webgl-noise
 //
 
+#ifndef _INCLUDE_SIMPLEX_NOISE_3D_
+#define _INCLUDE_SIMPLEX_NOISE_3D_
+
 #include "NoiseUtils.hlsl" 
 
 float snoise(float3 v)
@@ -187,4 +190,23 @@ void SimplexNoise3DGradient_float(float3 input, out float Out)
     Out = snoise_grad(input).x;
 }
 
+void FractalSimplexNoise3D_float(float3 input, int octaves, float lacunarity, float gain, out float output)
+{
+    // Initial values
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    // Loop of octaves
+    output = 0;
+    float total_amplitude = 0;
+    for (int i = 0; i < octaves; i++) {
+        output += amplitude * snoise(frequency * input);
+        total_amplitude += amplitude;
+        frequency *= lacunarity;
+        amplitude *= gain;
+    }
+    output /= total_amplitude;
+}
+
 // END JIMMY'S MODIFICATIONS
+
+#endif

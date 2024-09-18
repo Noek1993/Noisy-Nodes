@@ -1,3 +1,6 @@
+#ifndef _INCLUDE_VORONOI_NOISE_2D_
+#define _INCLUDE_VORONOI_NOISE_2D_
+
 inline float2 voronoi_noise_randomVector (float2 UV, float offset){
     float2x2 m = float2x2(15.27, 47.63, 99.41, 89.98);
     UV = frac(sin(mul(UV, m)) * 46839.32);
@@ -72,3 +75,5 @@ void Voronoi2D_float(float2 UV, float AngleOffset, float CellDensity, out float 
     Out = res.x;
     Cells = res.z;
 }
+
+#endif

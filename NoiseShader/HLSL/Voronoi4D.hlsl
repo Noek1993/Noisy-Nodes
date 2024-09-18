@@ -1,3 +1,6 @@
+#ifndef _INCLUDE_VORONOI_NOISE_4D_
+#define _INCLUDE_VORONOI_NOISE_4D_
+
 inline float4 voronoi_noise_randomVector (float4 UV, float offset){
     float4x4 m = float4x4(15.27, 47.63, 99.41, 89.98, 95.07, 38.39, 33.83, 51.06, 60.77, 51.15, 92.33, 97.74, 59.93, 42.33, 60.13, 35.72);
     UV = frac(sin(mul(UV, m)) * 46839.32);
@@ -85,3 +88,5 @@ void Voronoi4D_float(float4 UV, float AngleOffset, float CellDensity, out float 
     Out = res.x;
     Cells = res.z;
 }
+
+#endif

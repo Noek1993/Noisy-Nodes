@@ -23,6 +23,9 @@
 // https://github.com/ashima/webgl-noise
 //
 
+#ifndef _INCLUDE_PERLIN_NOISE_2D_
+#define _INCLUDE_PERLIN_NOISE_2D_
+
 #include "NoiseUtils.hlsl" 
 
 // Classic Perlin noise
@@ -121,3 +124,5 @@ void PerlinNoise2DPeriodic_float(float2 input, float2 period, out float Out)
 }
 
 // END JIMMY'S MODIFICATIONS
+
+#endif

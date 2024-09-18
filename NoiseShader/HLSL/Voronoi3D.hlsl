@@ -1,3 +1,6 @@
+#ifndef _INCLUDE_VORONOI_NOISE_3D_
+#define _INCLUDE_VORONOI_NOISE_3D_
+
 inline float3 voronoi_noise_randomVector (float3 UV, float offset){
     float3x3 m = float3x3(15.27, 47.63, 99.41, 89.98, 95.07, 38.39, 33.83, 51.06, 60.77);
     UV = frac(sin(mul(UV, m)) * 46839.32);
@@ -78,3 +81,24 @@ void Voronoi3D_float(float3 UV, float AngleOffset, float CellDensity, out float 
     Out = res.x;
     Cells = res.z;
 }
+
+void FractalSimplexNoise3D_float(float3 input, float angle_offset, float cell_density, int octaves, float lacunarity, float gain, out float output)
+{
+    // Initial values
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    // Loop of octaves
+    output = 0;
+    float total_amplitude = 0;
+    float val = 0;
+    float cells = 0;
+    for (int i = 0; i < octaves; i++) {
+        Voronoi3D_float(frequency* input, angle_offset, cell_density, val, cells);
+        output += amplitude * val;
+        total_amplitude += amplitude;
+        frequency *= lacunarity;
+        amplitude *= gain;
+    }
+    output /= total_amplitude;
+}
+#endif
