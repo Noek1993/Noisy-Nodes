@@ -206,14 +206,22 @@ float PingPong(float t)
     return t < 1 ? t : 2 - t;
 }
 
+float ridge(float h, float offset)
+{
+    h = offset - abs(h);
+    return h * h;
+}
+
 void RidgedPerlinNoise3D_float(float3 input, int octaves, float lacunarity, float gain, out float output)
 {
     // Initial values
     float amplitude = 0.5;
     float frequency = 1.0;
     float weight = 1;
-    // Loop of octaves
+    float prev = 1.0;
+
     output = 0;
+    // Loop of octaves
     for (int i = 0; i < octaves; i++)
     {
         // Ping Pong
@@ -233,15 +241,44 @@ void RidgedPerlinNoise3D_float(float3 input, int octaves, float lacunarity, floa
         // amplitude *= gain;
         
         // Rigded 2
-        float v = 1 - abs(cnoise(frequency * input));
-        v *= v;
-        v *= weight;
-        weight = clamp(v, 0, 1);
-        
-        output += v * amplitude;
+        // float v = 1 - abs(cnoise(frequency * input));
+        // v *= v;
+        // v *= weight;
+        // weight = clamp(v, 0, 1);
+        //
+        // output += v * amplitude;
+        // frequency *= lacunarity;
+        // amplitude *= gain;
+
+        // Rigded 3
+        float val = cnoise(frequency * input);
+        float n = ridge(val, 1);
+
+        output += n * amplitude * prev;
+        prev = n;
         frequency *= lacunarity;
         amplitude *= gain;
     }
+}
+
+void RidgedMultiPerlinNoise3D_float(float3 input, int octaves, float lacunarity, float gain, float offset, float roughness, out float output)
+{
+    float signal = offset - abs(cnoise(input));
+    signal *= signal;
+    float value = signal;
+    float weight = 1.0;
+    float pwr = roughness;
+
+    for (int i = 1; i <= octaves; i++) {
+        input *= lacunarity;
+        weight = clamp(signal * gain, 0.0, 1.0);
+        signal = offset - abs(cnoise(input));
+        signal *= signal;
+        signal *= weight;
+        value += signal * pwr;
+        pwr *= roughness;
+    }
+    output = value;
 }
 
 // END JIMMY'S MODIFICATIONS
